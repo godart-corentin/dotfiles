@@ -1,0 +1,5 @@
+# Walker/Elephant delegates both official and AUR installations to this script.
+command_install = "/home/corentin/.local/bin/install-arch-package '%VALUE%'"
+
+# Keep Elephant's interactive terminal wrapper for sudo and makepkg prompts.
+auto_wrap_with_terminal = true

@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+readonly program_name=${0##*/}
+build_root=""
+
+log() {
+  printf '%s\n' "$*"
+}
+
+die() {
+  local message=$1
+  local code=${2:-1}
+
+  printf '%s: %s\n' "$program_name" "$message" >&2
+  exit "$code"
+}
+
+cleanup() {
+  local status=$?
+
+  trap - EXIT
+  if [[ -n "$build_root" && -d "$build_root" ]]; then
+    rm -rf -- "$build_root"
+  fi
+
+  if (( status != 0 && status != 130 && status != 143 )) && [[ -t 0 ]]; then
+    printf '\nÉchec (code %d). Appuyez sur Entrée pour fermer le terminal.\n' "$status" >&2
+    read -r _ || true
+  fi
+
+  exit "$status"
+}
+
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+(( EUID != 0 )) || die "ce script doit être exécuté comme utilisateur, jamais comme root" 77
+(( $# == 1 )) || die "usage : $program_name <nom-exact-du-paquet>" 64
+
+readonly package=$1
+
+(( ${#package} <= 128 )) || die "nom de paquet trop long" 65
+[[ "$package" =~ ^[a-z0-9][a-z0-9@._+-]*$ ]] ||
+  die "nom de paquet invalide : '$package'" 65
+
+for command_name in pacman sudo git makepkg mktemp flock; do
+  command -v "$command_name" >/dev/null 2>&1 ||
+    die "commande requise introuvable : $command_name" 69
+done
+
+runtime_dir=${XDG_RUNTIME_DIR:-/tmp}
+if [[ ! -d "$runtime_dir" || ! -w "$runtime_dir" ]]; then
+  runtime_dir=/tmp
+fi
+
+readonly lock_file="$runtime_dir/install-arch-package-${UID}.lock"
+exec 9>"$lock_file"
+flock -n 9 || die "une autre installation de paquet est déjà en cours" 75
+
+if pacman -Si "$package" >/dev/null 2>&1; then
+  log "[official] $package"
+  log "Installation depuis les dépôts Arch activés..."
+  sudo pacman -S --needed "$package"
+  log "[official] Installation terminée : $package"
+  exit 0
+fi
+
+log "[AUR] $package"
+log "Absent des dépôts officiels activés ; vérification du dépôt AUR exact."
+
+build_root=$(mktemp -d --tmpdir "${program_name}.XXXXXXXX") ||
+  die "impossible de créer le répertoire temporaire" 73
+readonly source_dir="$build_root/$package"
+readonly aur_url="https://aur.archlinux.org/${package}.git"
+
+if ! git clone -- "$aur_url" "$source_dir"; then
+  die "dépôt AUR introuvable ou clonage impossible : $aur_url" 69
+fi
+
+if ! git -C "$source_dir" rev-parse --verify HEAD >/dev/null 2>&1; then
+  die "dépôt AUR inexistant ou vide : $aur_url" 69
+fi
+
+[[ -f "$source_dir/PKGBUILD" ]] || die "le dépôt AUR ne contient pas de PKGBUILD" 65
+[[ -f "$source_dir/.SRCINFO" ]] || die "le dépôt AUR ne contient pas de .SRCINFO" 65
+
+pkgbase=$(sed -n 's/^[[:space:]]*pkgbase = //p' "$source_dir/.SRCINFO" | head -n 1)
+[[ "$pkgbase" == "$package" ]] ||
+  die "le dépôt demandé produit le pkgbase '$pkgbase', pas '$package'" 65
+
+mapfile -t produced_packages < <(
+  sed -n 's/^[[:space:]]*pkgname = //p' "$source_dir/.SRCINFO" | sort -u
+)
+(( ${#produced_packages[@]} > 0 )) || die ".SRCINFO ne déclare aucun paquet produit" 65
+
+log
+log "Métadonnées AUR (.SRCINFO) :"
+log "----------------------------------------"
+sed -n '1,220p' "$source_dir/.SRCINFO"
+log "----------------------------------------"
+
+if (( ${#produced_packages[@]} > 1 )); then
+  printf 'Attention : ce PKGBUILD produit plusieurs paquets :'
+  printf ' %s' "${produced_packages[@]}"
+  printf '\nIls pourront tous être proposés par makepkg -si.\n'
+fi
+
+log
+log "Inspection obligatoire du PKGBUILD (quittez avec q) :"
+log "----------------------------------------"
+if command -v less >/dev/null 2>&1 && [[ -t 0 && -t 1 ]]; then
+  LESSSECURE=1 less -- "$source_dir/PKGBUILD"
+else
+  sed -n '1,99999p' "$source_dir/PKGBUILD"
+fi
+log "----------------------------------------"
+
+[[ -t 0 ]] || die "l'installation AUR exige un terminal interactif" 69
+printf 'Compiler et installer exactement le dépôt AUR %s ? [y/N] ' "$package"
+read -r confirmation
+case "$confirmation" in
+  y|Y|yes|YES|oui|OUI) ;;
+  *) die "installation annulée" 125 ;;
+esac
+
+log "[AUR] Compilation et installation de $package..."
+(
+  cd "$source_dir"
+  makepkg -si
+)
+log "[AUR] Installation terminée : $package"

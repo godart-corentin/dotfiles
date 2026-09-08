@@ -1,0 +1,268 @@
+* {
+  font-family: inherit;
+}
+
+/* =========================
+   Fenêtre principale
+   ========================= */
+
+.box-wrapper {
+  background-color: {{colors.surface.default.hex}}82;
+  background-image: linear-gradient(
+    {{colors.primary.default.hex}}0c,
+    {{colors.primary.default.hex}}0c
+  );
+  border: 1px solid {{colors.primary.default.hex}}26;
+  border-radius: 13px;
+  padding: 9px;
+  box-shadow: 0 12px 32px #00000052;
+}
+
+/* =========================
+   Barre de recherche
+   ========================= */
+
+.search-container {
+  background: {{colors.surface_container.default.hex}}38;
+  border: 1px solid {{colors.outline_variant.default.hex}}26;
+  border-radius: 10px;
+  padding: 4px 7px;
+  margin-bottom: 3px;
+}
+
+.input {
+  background: transparent;
+  background-image: none;
+  color: {{colors.on_surface.default.hex}};
+  border: none;
+  box-shadow: none;
+  outline: none;
+  padding: 5px 6px;
+  border-radius: 8px;
+  caret-color: {{colors.primary.default.hex}};
+}
+
+.input:focus,
+.input:focus-within,
+.input:active {
+  background: transparent;
+  background-image: none;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.input placeholder {
+  color: {{colors.on_surface_variant.default.hex}};
+  opacity: 0.55;
+}
+
+.input selection {
+  background: {{colors.primary_container.default.hex}};
+  color: {{colors.on_primary_container.default.hex}};
+}
+
+/* =========================
+   Zone résultats
+   ========================= */
+
+.list,
+gridview,
+listview,
+scrolledwindow,
+viewport {
+  background: transparent;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  box-shadow: none;
+}
+
+gridview > child,
+.list > child,
+listview row,
+listview child {
+  background: transparent;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* =========================
+   Items / applications
+   ========================= */
+
+.item-box {
+  background: transparent;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  box-shadow: none;
+  padding: 6px 8px;
+  margin: 1px 0;
+}
+
+/* Neutralise le style GTK natif */
+gridview > child:selected,
+gridview > child:hover,
+gridview > child:focus,
+gridview > child:focus-visible,
+.list > child:selected,
+.list > child:hover,
+.list > child:focus,
+.list > child:focus-visible,
+listview row:selected,
+listview row:hover,
+listview row:focus,
+listview row:selected:hover,
+listview row:selected:focus {
+  background: transparent;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Sélection */
+gridview > child:selected .item-box,
+.list > child:selected .item-box,
+listview row:selected .item-box {
+  background: {{colors.primary.default.hex}}14;
+  border: 1px solid {{colors.primary.default.hex}}30;
+  box-shadow: none;
+}
+
+/* Hover */
+gridview > child:hover:not(:selected) .item-box,
+.list > child:hover:not(:selected) .item-box,
+listview row:hover:not(:selected) .item-box {
+  background: {{colors.primary.default.hex}}09;
+  border-color: {{colors.primary.default.hex}}14;
+}
+
+/* =========================
+   Texte
+   ========================= */
+
+.item-text {
+  color: {{colors.on_surface.default.hex}};
+  font-weight: 500;
+}
+
+.item-subtext {
+  color: {{colors.on_surface_variant.default.hex}};
+  font-size: 11px;
+  opacity: 0.56;
+}
+
+.item-quick-activation {
+  background: {{colors.primary.default.hex}}0c;
+  color: {{colors.on_surface_variant.default.hex}};
+  border: 1px solid {{colors.primary.default.hex}}18;
+  border-radius: 6px;
+  padding: 3px 6px;
+  opacity: 0.72;
+}
+
+/* =========================
+   Icônes
+   ========================= */
+
+.normal-icons {
+  -gtk-icon-size: 17px;
+}
+
+.large-icons {
+  -gtk-icon-size: 24px;
+}
+
+/* =========================
+   Preview
+   ========================= */
+
+.preview {
+  background-color: {{colors.surface_container.default.hex}}30;
+  background-image: linear-gradient(
+    {{colors.primary.default.hex}}06,
+    {{colors.primary.default.hex}}06
+  );
+  border: 1px solid {{colors.outline_variant.default.hex}}24;
+  border-radius: 10px;
+  color: {{colors.on_surface.default.hex}};
+}
+
+.preview-box,
+.elephant-hint,
+.placeholder {
+  color: {{colors.on_surface_variant.default.hex}};
+}
+
+/* =========================
+   Footer / actions
+   ========================= */
+
+.keybinds {
+  background: transparent;
+  border-top: 1px solid {{colors.outline_variant.default.hex}}1c;
+  color: {{colors.on_surface_variant.default.hex}};
+  font-size: 10px;
+  padding-top: 5px;
+  opacity: 0.78;
+}
+
+/* Boutons */
+.keybinds button,
+button {
+  background: transparent;
+  background-image: none;
+  color: {{colors.on_surface_variant.default.hex}};
+  border: 1px solid {{colors.outline_variant.default.hex}}18;
+  border-radius: 6px;
+  box-shadow: none;
+  outline: none;
+  padding: 3px 6px;
+}
+
+.keybinds button:hover,
+button:hover {
+  background: {{colors.primary.default.hex}}0a;
+  background-image: none;
+  border-color: {{colors.primary.default.hex}}24;
+  color: {{colors.primary.default.hex}};
+  box-shadow: none;
+}
+
+.keybinds button:focus,
+.keybinds button:focus-visible,
+.keybinds button:active,
+button:focus,
+button:focus-visible,
+button:active {
+  background: {{colors.primary.default.hex}}0d;
+  background-image: none;
+  border-color: {{colors.primary.default.hex}}28;
+  box-shadow: none;
+  outline: none;
+}
+
+.keybind-bind {
+  color: {{colors.on_surface_variant.default.hex}};
+  opacity: 0.42;
+}
+
+.keybind-label {
+  padding: 1px 4px;
+}
+
+/* =========================
+   Scrollbar
+   ========================= */
+
+scrollbar {
+  opacity: 0;
+  min-width: 0;
+  min-height: 0;
+}
