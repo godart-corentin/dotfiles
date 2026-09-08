@@ -13,32 +13,32 @@ Le fichier `~/.config/walker/themes/noctalia/style.css` n'est pas versionné : i
 
 ## Installation
 
-Depuis la racine du dépôt :
+Installation en une commande avec GitHub CLI :
 
 ```bash
-cp -a .config .local "$HOME/"
-chmod 0755 "$HOME/.local/bin/install-arch-package"
+mkdir -p "$HOME/workspace" && gh repo clone godart-corentin/dotfiles "$HOME/workspace/dotfiles" && "$HOME/workspace/dotfiles/install.sh"
 ```
 
-Le template Walker doit être déclaré dans `~/.config/noctalia/config.toml` :
-
-```toml
-[theme.templates.user.walker]
-input_path = "~/.config/noctalia/templates/walker.css"
-output_path = "$XDG_CONFIG_HOME/walker/themes/noctalia/style.css"
-post_hook = "pkill walker >/dev/null 2>&1 || true"
-```
-
-Appliquer ensuite la configuration :
+Depuis un clone existant :
 
 ```bash
-noctalia msg templates-apply
-systemctl --user restart elephant.service
-hyprctl reload
+./install.sh
 ```
+
+L'installateur est idempotent. Il vérifie les dépendances, copie uniquement les fichiers nécessaires et sauvegarde chaque cible différente sous la forme `*.bak-dotfiles-*` avant remplacement. Il déclare ensuite le template Walker dans Noctalia si nécessaire, applique la palette, redémarre Elephant et recharge Hyprland.
+
+Il refuse d'écraser un lien symbolique divergent afin de ne pas interférer silencieusement avec un autre gestionnaire de dotfiles.
+
+## Diagnostic
+
+```bash
+./check.sh
+```
+
+Le diagnostic contrôle Walker, Elephant et ses providers, le CSS généré, le script d'installation des paquets, le bind `Super+Space` et la règle de blur Walker.
 
 ## Dépendances
 
-`walker`, `elephant`, `elephant-desktopapplications`, `elephant-archlinuxpkgs`, `git`, `pacman`, `makepkg`, `sudo` et `flock`.
+`walker`, `elephant`, `elephant-desktopapplications`, `elephant-archlinuxpkgs`, `noctalia`, `hyprland`, `git`, `pacman`, `makepkg`, `sudo` et `flock`.
 
 Les paquets AUR sont construits directement avec `makepkg -si`. Aucun helper AUR n'est utilisé.
