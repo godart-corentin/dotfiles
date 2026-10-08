@@ -76,7 +76,7 @@ hl.bind("CONTROL + SHIFT + Escape", hl.dsp.exec_cmd(launchPrefix .. TERMINAL .. 
 hl.bind(mainMod .. " + Z",          hl.dsp.global("caelestia:nexus"))
 hl.bind(mainMod .. " + X",          hl.dsp.global("caelestia:utilities"))
 hl.bind(mainMod .. " + Space",      hl.dsp.global("caelestia:launcher"))
-hl.bind(mainMod .. " + period",     hl.dsp.exec_cmd("pkill fuzzel || caelestia emoji -p"))
+hl.bind(mainMod .. " + semicolon",  hl.dsp.exec_cmd("pkill fuzzel || caelestia emoji -p")) -- AZERTY: same key as "."
 hl.bind(mainMod .. " + L",          hl.dsp.global("caelestia:lock"))
 hl.bind(mainMod .. " + ALT + C",    hl.dsp.global("caelestia:session"))
 
@@ -106,8 +106,8 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.global("caelestia:brightnessDown"), { lo
 
 -- Screen Capture
 hl.bind(mainMod .. " + P",     hl.dsp.exec_cmd("hyprpicker -a -n"))
-hl.bind("Print",               hl.dsp.global("caelestia:screenshot"))
-hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("caelestia screenshot"))
+hl.bind(mainMod .. " + SHIFT + ALT + S",   hl.dsp.global("caelestia:screenshot"))
+hl.bind(mainMod .. " + CONTROL + ALT + S", hl.dsp.exec_cmd("caelestia screenshot"))
 
 -- Wallpaper: type ">wallpaper" in the launcher
 
