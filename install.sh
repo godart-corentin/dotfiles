@@ -22,7 +22,7 @@ check_dependencies() {
   local missing=()
   local command_name
 
-  for command_name in walker elephant noctalia hyprctl git makepkg pacman sudo flock systemctl; do
+  for command_name in caelestia qs hyprctl wpctl wl-paste cliphist fuzzel git makepkg pacman sudo flock systemctl; do
     command -v "$command_name" >/dev/null 2>&1 || missing+=("$command_name")
   done
 
@@ -74,57 +74,81 @@ install_file() {
   info "installé : ~/$relative"
 }
 
-ensure_noctalia_registration() {
-  local config_dir="$HOME/.config/noctalia"
-  local config_file="$config_dir/config.toml"
+# Caelestia réécrit gtk.css à chaque changement de couleurs : on garde la version Noctalia.
+backup_noctalia_gtk() {
+  local gtk_css
 
-  mkdir -p -- "$config_dir"
-  if [[ -f "$config_file" ]] && grep -Eq '^[[:space:]]*\[theme\.templates\.user\.walker\][[:space:]]*$' "$config_file"; then
-    info "template Walker déjà déclaré dans Noctalia"
-    return
+  for gtk_css in "$HOME/.config/gtk-3.0/gtk.css" "$HOME/.config/gtk-4.0/gtk.css"; do
+    if [[ -f "$gtk_css" ]] && grep -Fq 'noctalia' "$gtk_css"; then
+      backup_file "$gtk_css"
+    fi
+  done
+}
+
+disable_legacy_services() {
+  if systemctl --user is-enabled --quiet elephant.service 2>/dev/null; then
+    if systemctl --user disable --now elephant.service; then
+      info "elephant.service désactivé"
+    else
+      warn "impossible de désactiver elephant.service"
+    fi
   fi
+}
 
-  if [[ -L "$config_file" ]]; then
-    die "refus de modifier le lien symbolique Noctalia : $config_file"
+start_clipboard_watchers() {
+  local type
+
+  for type in text image; do
+    if ! pgrep -f "wl-paste --type $type --watch cliphist store" >/dev/null; then
+      setsid -f wl-paste --type "$type" --watch cliphist store >/dev/null 2>&1
+      info "historique du presse-papiers ($type) démarré"
+    fi
+  done
+}
+
+# Reprend le fond d'écran de Noctalia, avec des couleurs calculées à partir de lui.
+import_noctalia_wallpaper() {
+  local state_file="$HOME/.local/state/noctalia/settings.toml"
+  local wallpaper
+
+  [[ "$(caelestia wallpaper)" == "No wallpaper set" ]] || return 0
+  [[ -f "$state_file" ]] || return 0
+
+  wallpaper=$(sed -n '/^\[wallpaper\.last\]/,/^\[/s/^path = "\(.*\)"$/\1/p' "$state_file" | head -n 1)
+  [[ -n "$wallpaper" && -f "$wallpaper" ]] || return 0
+
+  caelestia scheme set -n dynamic || warn "impossible de passer au schéma de couleurs dynamique"
+  if caelestia wallpaper -f "$wallpaper"; then
+    info "fond d'écran repris de Noctalia : $wallpaper"
+  else
+    warn "impossible d'appliquer le fond d'écran $wallpaper"
   fi
-
-  if [[ -f "$config_file" ]]; then
-    backup_file "$config_file"
-  fi
-
-  {
-    printf '\n[theme.templates.user.walker]\n'
-    printf 'input_path = "~/.config/noctalia/templates/walker.css"\n'
-    printf 'output_path = "$XDG_CONFIG_HOME/walker/themes/noctalia/style.css"\n'
-    printf 'post_hook = "pkill walker >/dev/null 2>&1 || true"\n'
-  } >> "$config_file"
-
-  info "template Walker déclaré dans Noctalia"
 }
 
 apply_runtime_configuration() {
   local failed=0
 
-  if noctalia msg templates-apply; then
-    info "template Noctalia appliqué"
-  else
-    warn "Noctalia indisponible ; relancez l'installateur dans la session graphique"
-    failed=1
-  fi
-
-  if systemctl --user restart elephant.service; then
-    info "Elephant redémarré"
-  else
-    warn "impossible de redémarrer elephant.service"
-    failed=1
-  fi
-
   if hyprctl reload; then
     info "Hyprland rechargé"
   else
     warn "Hyprland indisponible ; relancez l'installateur dans la session graphique"
+    return 1
+  fi
+
+  if pkill -x noctalia; then
+    info "Noctalia arrêté"
+  fi
+
+  if caelestia shell -d; then
+    info "Caelestia démarré"
+  else
+    warn "impossible de démarrer Caelestia"
     failed=1
   fi
+
+  disable_legacy_services
+  start_clipboard_watchers
+  import_noctalia_wallpaper
 
   return "$failed"
 }
@@ -134,17 +158,15 @@ main() {
 
   check_dependencies
 
-  install_file '.config/walker/config.toml' 0644
-  install_file '.config/walker/themes/noctalia/layout.xml' 0644
-  install_file '.config/walker/themes/noctalia/preview.xml' 0644
-  install_file '.config/noctalia/templates/walker.css' 0644
-  install_file '.config/elephant/archlinuxpkgs.toml' 0644
-  install_file '.config/elephant/desktopapplications.toml' 0644
+  install_file '.config/caelestia/shell.json' 0644
+  install_file '.config/caelestia/cli.json' 0644
   install_file '.local/bin/install-arch-package' 0755
   install_file '.config/hypr/hyprland.lua' 0644
+  install_file '.config/hypr/config/autostart.lua' 0644
   install_file '.config/hypr/config/binds.lua' 0644
+  install_file '.config/hypr/config/windowrules.lua' 0644
 
-  ensure_noctalia_registration
+  backup_noctalia_gtk
   apply_runtime_configuration || runtime_failed=$?
 
   if (( runtime_failed != 0 )); then

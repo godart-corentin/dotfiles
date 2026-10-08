@@ -12,9 +12,3 @@ require("config.misc")
 require("config.monitors")
 require("config.windowrules")
 require("config.workspaces")
-
-hl.layer_rule({
-    match = { namespace = "walker" },
-    blur = true,
-    ignore_alpha = 0.25,
-})

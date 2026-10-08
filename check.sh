@@ -23,37 +23,41 @@ check_command() {
   fi
 }
 
-check_provider() {
-  local provider=$1
+check_command caelestia
+check_command qs
+check_command cliphist
+check_command fuzzel
 
-  if grep -Fxq "$provider" <<< "$providers"; then
-    pass "provider Elephant : $provider"
+if command -v qs >/dev/null 2>&1 && qs -c caelestia list -j 2>/dev/null | grep -q '"pid"'; then
+  pass "Caelestia en cours d'exécution"
+else
+  fail 'Caelestia ne tourne pas'
+fi
+
+if pgrep -x noctalia >/dev/null; then
+  fail 'Noctalia tourne encore en parallèle de Caelestia'
+else
+  pass 'Noctalia arrêté'
+fi
+
+if systemctl --user is-active --quiet elephant.service 2>/dev/null; then
+  fail 'elephant.service encore actif'
+else
+  pass 'elephant.service inactif'
+fi
+
+for type in text image; do
+  if pgrep -f "wl-paste --type $type --watch cliphist store" >/dev/null; then
+    pass "historique du presse-papiers ($type) actif"
   else
-    fail "provider Elephant absent : $provider"
+    fail "historique du presse-papiers ($type) inactif"
   fi
-}
+done
 
-check_command walker
-check_command elephant
-
-if command -v systemctl >/dev/null 2>&1 && systemctl --user is-active --quiet elephant.service; then
-  pass 'elephant.service actif'
+if [[ -f "$HOME/.config/caelestia/shell.json" ]]; then
+  pass 'configuration Caelestia présente'
 else
-  fail 'elephant.service inactif ou inaccessible'
-fi
-
-providers=""
-if command -v elephant >/dev/null 2>&1; then
-  providers=$(elephant listproviders 2>/dev/null || true)
-fi
-check_provider desktopapplications
-check_provider archlinuxpkgs
-
-generated_style="$HOME/.config/walker/themes/noctalia/style.css"
-if [[ -s "$generated_style" ]] && ! grep -Fq '{{' "$generated_style"; then
-  pass 'template Walker généré'
-else
-  fail "template Walker absent, vide ou non résolu : $generated_style"
+  fail "configuration absente : $HOME/.config/caelestia/shell.json"
 fi
 
 installer="$HOME/.local/bin/install-arch-package"
@@ -64,26 +68,16 @@ else
 fi
 
 binds_file="$HOME/.config/hypr/config/binds.lua"
-if [[ -f "$binds_file" ]] && grep -Eq 'hl\.bind\(mainMod \.\. " \+ Space".*walker' "$binds_file"; then
-  pass 'bind Super+Space vers Walker'
+if [[ -f "$binds_file" ]] && grep -Eq 'hl\.bind\(mainMod \.\. " \+ Space".*caelestia:launcher' "$binds_file"; then
+  pass 'bind Super+Space vers le launcher Caelestia'
 else
-  fail "bind Super+Space vers Walker absent : $binds_file"
+  fail "bind Super+Space vers Caelestia absent : $binds_file"
 fi
 
-hyprland_file="$HOME/.config/hypr/hyprland.lua"
-if [[ -f "$hyprland_file" ]] && awk '
-  /hl\.layer_rule/ { in_rule=1; namespace=0; blur=0 }
-  in_rule && /namespace[[:space:]]*=[[:space:]]*"walker"/ { namespace=1 }
-  in_rule && /blur[[:space:]]*=[[:space:]]*true/ { blur=1 }
-  in_rule && /^[[:space:]]*}\)/ {
-    if (namespace && blur) found=1
-    in_rule=0
-  }
-  END { exit(found ? 0 : 1) }
-' "$hyprland_file"; then
-  pass 'règle blur Walker'
+if grep -rqiE 'noctalia|walker' "$HOME/.config/hypr" --include='*.lua'; then
+  fail 'références à Noctalia ou Walker restantes dans la config Hyprland'
 else
-  fail "règle blur Walker absente : $hyprland_file"
+  pass 'config Hyprland sans Noctalia ni Walker'
 fi
 
 if (( failures == 0 )); then

@@ -1,0 +1,20 @@
+{
+    "theme": {
+        "enableTerm": true,
+        "enableHypr": false,
+        "enableDiscord": false,
+        "enableSpicetify": false,
+        "enablePandora": false,
+        "enableFuzzel": true,
+        "enableBtop": true,
+        "enableNvtop": false,
+        "enableHtop": false,
+        "enableGtk": true,
+        "enableQt": false,
+        "enableWarp": false,
+        "enableChromium": false,
+        "enableZed": true,
+        "enableCava": false,
+        "iconTheme": "breeze"
+    }
+}
