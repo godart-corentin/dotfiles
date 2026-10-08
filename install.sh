@@ -117,12 +117,13 @@ import_noctalia_wallpaper() {
   wallpaper=$(sed -n '/^\[wallpaper\.last\]/,/^\[/s/^path = "\(.*\)"$/\1/p' "$state_file" | head -n 1)
   [[ -n "$wallpaper" && -f "$wallpaper" ]] || return 0
 
-  caelestia scheme set -n dynamic || warn "impossible de passer au schéma de couleurs dynamique"
-  if caelestia wallpaper -f "$wallpaper"; then
-    info "fond d'écran repris de Noctalia : $wallpaper"
-  else
+  # Le schéma dynamique exige un fond d'écran déjà défini.
+  if ! caelestia wallpaper -f "$wallpaper"; then
     warn "impossible d'appliquer le fond d'écran $wallpaper"
+    return 0
   fi
+  info "fond d'écran repris de Noctalia : $wallpaper"
+  caelestia scheme set -n dynamic || warn "impossible de passer au schéma de couleurs dynamique"
 }
 
 # Kitty inclut le thème généré par le modèle Caelestia, régénéré à chaque changement de couleurs.
@@ -159,6 +160,10 @@ apply_runtime_configuration() {
     info "Noctalia arrêté"
   fi
 
+  # Avant le démarrage du shell : sans fond d'écran enregistré, il applique son fond par défaut.
+  import_noctalia_wallpaper
+  link_kitty_theme
+
   if caelestia shell -d; then
     info "Caelestia démarré"
   else
@@ -168,8 +173,6 @@ apply_runtime_configuration() {
 
   disable_legacy_services
   start_clipboard_watchers
-  import_noctalia_wallpaper
-  link_kitty_theme
 
   return "$failed"
 }
