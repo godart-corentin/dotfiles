@@ -15,6 +15,7 @@
         "enableChromium": false,
         "enableZed": true,
         "enableCava": false,
-        "iconTheme": "breeze"
+        "iconTheme": "breeze",
+        "postHook": "pkill -USR1 -x kitty || true"
     }
 }

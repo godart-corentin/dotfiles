@@ -60,6 +60,14 @@ else
   fail "configuration absente : $HOME/.config/caelestia/shell.json"
 fi
 
+kitty_theme="$HOME/.config/kitty/themes/caelestia.conf"
+if [[ -s "$kitty_theme" ]] && ! grep -Fq '{{' "$kitty_theme" &&
+  grep -Fxq 'include themes/caelestia.conf' "$HOME/.config/kitty/kitty.conf" 2>/dev/null; then
+  pass 'thème kitty généré par Caelestia'
+else
+  fail "thème kitty absent, non résolu ou non inclus : $kitty_theme"
+fi
+
 installer="$HOME/.local/bin/install-arch-package"
 if [[ -f "$installer" && -x "$installer" ]]; then
   pass 'install-arch-package exécutable'

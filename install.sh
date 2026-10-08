@@ -125,6 +125,26 @@ import_noctalia_wallpaper() {
   fi
 }
 
+# Kitty inclut le thème généré par le modèle Caelestia, régénéré à chaque changement de couleurs.
+link_kitty_theme() {
+  local generated="$HOME/.local/state/caelestia/theme/kitty.conf"
+  local link="$HOME/.config/kitty/themes/caelestia.conf"
+
+  if [[ ! -f "$generated" ]]; then
+    caelestia scheme set -n "$(caelestia scheme get -n)" ||
+      warn "impossible de générer le thème kitty"
+  fi
+
+  mkdir -p -- "$(dirname -- "$link")"
+  if [[ -e "$link" && ! -L "$link" ]]; then
+    die "refus d'écraser le fichier existant : $link"
+  fi
+  ln -sfn -- "$generated" "$link"
+  info "thème kitty relié : $link"
+
+  pkill -USR1 -x kitty || true
+}
+
 apply_runtime_configuration() {
   local failed=0
 
@@ -149,6 +169,7 @@ apply_runtime_configuration() {
   disable_legacy_services
   start_clipboard_watchers
   import_noctalia_wallpaper
+  link_kitty_theme
 
   return "$failed"
 }
@@ -160,6 +181,8 @@ main() {
 
   install_file '.config/caelestia/shell.json' 0644
   install_file '.config/caelestia/cli.json' 0644
+  install_file '.config/caelestia/templates/kitty.conf' 0644
+  install_file '.config/kitty/kitty.conf' 0644
   install_file '.local/bin/install-arch-package' 0755
   install_file '.config/hypr/hyprland.lua' 0644
   install_file '.config/hypr/config/autostart.lua' 0644

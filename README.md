@@ -5,6 +5,7 @@ Configuration personnelle pour CachyOS, Hyprland et Caelestia.
 ## Contenu
 
 - Caelestia : dossier des fonds d'écran (`~/Images`) et applications thémées par la CLI
+- Kitty : couleurs générées par un modèle Caelestia et rechargées à chaque changement de fond d'écran
 - Hyprland : raccourcis vers Caelestia, démarrage du shell et de l'historique du presse-papiers, règle de fenêtre pour Nexus (les réglages de Caelestia)
 - `install-arch-package` : installation Arch/AUR sans helper, à lancer à la main
 
@@ -64,4 +65,5 @@ systemctl --user enable --now elephant.service
 Restaurez ensuite depuis leur sauvegarde `*.bak-dotfiles-*` les fichiers que la branche `main` ne versionne pas :
 
 - `~/.config/hypr/config/autostart.lua` et `~/.config/hypr/config/windowrules.lua` ;
+- `~/.config/kitty/kitty.conf` ;
 - `~/.config/gtk-3.0/gtk.css` et `~/.config/gtk-4.0/gtk.css`.
