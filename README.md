@@ -56,13 +56,13 @@ Le diagnostic contrôle Caelestia et ses outils, l'arrêt de Noctalia et d'Eleph
 ## Revenir à Noctalia
 
 ```bash
-git switch main && ./install.sh
+git switch --detach ae81d02 && ./install.sh
 caelestia shell -k
 setsid -f noctalia
 systemctl --user enable --now elephant.service
 ```
 
-Restaurez ensuite depuis leur sauvegarde `*.bak-dotfiles-*` les fichiers que la branche `main` ne versionne pas :
+Restaurez ensuite depuis leur sauvegarde `*.bak-dotfiles-*` les fichiers que ce commit ne versionne pas :
 
 - `~/.config/hypr/config/autostart.lua` et `~/.config/hypr/config/windowrules.lua` ;
 - `~/.config/kitty/kitty.conf` ;
