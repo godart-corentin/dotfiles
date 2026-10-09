@@ -124,7 +124,7 @@ hl.bind(mainMod .. " + CONTROL + ALT + S", hl.dsp.exec_cmd("caelestia screenshot
 -- Wallpaper: type ">wallpaper" in the launcher
 
 -- Clipboard
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard"), d("Caelestia", "Historique du presse-papiers"))
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(outil .. "presse-papiers"), d("Caelestia", "Historique du presse-papiers"))
 
 -- Notifications
 hl.bind(mainMod .. " + A", hl.dsp.global("caelestia:sidebar"), d("Caelestia", "Notifications"))
