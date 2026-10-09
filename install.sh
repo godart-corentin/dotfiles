@@ -22,7 +22,7 @@ check_dependencies() {
   local missing=()
   local command_name
 
-  for command_name in caelestia qs hyprctl wpctl wl-paste wl-copy cliphist fuzzel grim slurp satty hyprpicker jq notify-send git makepkg pacman sudo flock systemctl; do
+  for command_name in caelestia qs hyprctl wpctl wl-paste wl-copy cliphist grim slurp satty hyprpicker jq notify-send git makepkg pacman sudo flock systemctl; do
     command -v "$command_name" >/dev/null 2>&1 || missing+=("$command_name")
   done
 
@@ -202,7 +202,7 @@ main() {
   install_file '.local/bin/install-arch-package' 0755
   install_file '.local/bin/qs-outil' 0755
   install_file '.local/bin/capture' 0755
-  for file in "$script_dir"/.config/quickshell/outils/*.qml; do
+  for file in "$script_dir"/.config/quickshell/outils/*.{qml,json}; do
     install_file "${file#"$script_dir/"}" 0644
   done
   install_file '.config/hypr/hyprland.lua' 0644

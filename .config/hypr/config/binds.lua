@@ -85,7 +85,7 @@ hl.bind("CONTROL + SHIFT + Escape", hl.dsp.exec_cmd(launchPrefix .. TERMINAL .. 
 hl.bind(mainMod .. " + Z",          hl.dsp.global("caelestia:nexus"), d("Caelestia", "Réglages (Nexus)"))
 hl.bind(mainMod .. " + X",          hl.dsp.global("caelestia:utilities"), d("Caelestia", "Utilitaires"))
 hl.bind(mainMod .. " + Space",      hl.dsp.global("caelestia:launcher"), d("Caelestia", "Lanceur d'applications"))
-hl.bind(mainMod .. " + semicolon",  hl.dsp.exec_cmd("pkill fuzzel || caelestia emoji -p"), d("Caelestia", "Emojis")) -- AZERTY: same key as "."
+hl.bind(mainMod .. " + semicolon",  hl.dsp.exec_cmd(outil .. "emojis"), d("Caelestia", "Emojis")) -- AZERTY: same key as "."
 hl.bind(mainMod .. " + L",          hl.dsp.global("caelestia:lock"), d("Caelestia", "Verrouiller"))
 hl.bind(mainMod .. " + ALT + C",    hl.dsp.global("caelestia:session"), d("Caelestia", "Session (éteindre, redémarrer…)"))
 hl.bind(mainMod .. " + I",          hl.dsp.exec_cmd(outil .. "inactivite"), d("Caelestia", "Délais d'inactivité"))

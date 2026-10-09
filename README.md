@@ -10,6 +10,7 @@ Configuration personnelle pour CachyOS, Hyprland et Caelestia.
   - `Super+I` : délais d'inactivité (verrouillage, extinction de l'écran, mise en veille), réglés à la volée dans `general.idle.timeouts` de `~/.config/caelestia/shell.json`
   - `Super+Maj+P` : menu de capture (zone, fenêtre, écran ou couleur ; copier, enregistrer ou annoter avec satty ; délai). Les captures vont dans `~/Captures`, hors de `~/Images` où Caelestia cherche les fonds d'écran
   - `Super+V` : historique du presse-papiers (cliphist) avec aperçu du texte et des images, recherche, filtres et épinglage. Les épinglés sont gardés hors de cliphist : `~/.local/state/presse-papiers-epingles.json` et `~/.local/share/presse-papiers`
+  - `Super+;` : emojis en français (recherche par nom et mots-clés, récents, couleur de peau). Données dans `emojis.json`, générées depuis emojibase-data (la commande est en tête de `emojis.qml`)
   - `Super+F1` : aide-mémoire des raccourcis, lu en direct depuis `hyprctl binds` ; chaque raccourci de `binds.lua` porte une description « Catégorie › Action »
 - Hyprland : raccourcis vers Caelestia, démarrage du shell et de l'historique du presse-papiers, règle de fenêtre pour Nexus (les réglages de Caelestia)
 - `install-arch-package` : installation Arch/AUR sans helper, à lancer à la main
