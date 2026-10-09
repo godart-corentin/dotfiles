@@ -75,7 +75,7 @@ else
   fail "script absent ou non exécutable : $installer"
 fi
 
-for outil in inactivite raccourcis; do
+for outil in inactivite capture raccourcis; do
   if [[ -f "$HOME/.config/quickshell/outils/$outil.qml" ]]; then
     pass "fenêtre $outil présente"
   else
@@ -83,7 +83,7 @@ for outil in inactivite raccourcis; do
   fi
 done
 
-for script in qs-outil; do
+for script in qs-outil capture; do
   if [[ -x "$HOME/.local/bin/$script" ]]; then
     pass "$script exécutable"
   else

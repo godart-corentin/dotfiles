@@ -116,6 +116,7 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.global("caelestia:brightnessDown"), d("M
 -------------------
 
 -- Screen Capture
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd(outil .. "capture"), d("Captures", "Menu de capture"))
 hl.bind(mainMod .. " + P",     hl.dsp.exec_cmd("hyprpicker -a -n"), d("Captures", "Pipette de couleur"))
 hl.bind(mainMod .. " + SHIFT + ALT + S",   hl.dsp.global("caelestia:screenshot"), d("Captures", "Zone (sélecteur Caelestia)"))
 hl.bind(mainMod .. " + CONTROL + ALT + S", hl.dsp.exec_cmd("caelestia screenshot"), d("Captures", "Écran entier"))

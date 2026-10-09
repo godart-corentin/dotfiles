@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Capture d'écran sous Hyprland, appelée par le menu de capture (Super+Maj+P).
+# Usage : capture <zone|fenetre|ecran|couleur> [copier|enregistrer|annoter] [délai en secondes]
+
+set -euo pipefail
+
+readonly mode=${1:-zone}
+readonly action=${2:-copier}
+readonly delay=${3:-0}
+# Hors de ~/Images : Caelestia y cherche les fonds d'écran, sous-dossiers compris.
+readonly captures_dir=$HOME/Captures
+
+notify() {
+  notify-send -a Capture "$@" || true
+}
+
+# Fenêtres visibles (espaces de travail actifs et spéciaux affichés), au format de slurp.
+window_boxes() {
+  local workspaces
+  workspaces=$(hyprctl monitors -j | jq '[.[] | .activeWorkspace.id, .specialWorkspace.id]')
+  hyprctl clients -j | jq -r --argjson workspaces "$workspaces" '
+    .[] | select(.mapped and (.hidden | not) and (.workspace.id as $id | $workspaces | index($id)))
+    | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"'
+}
+
+focused_monitor() {
+  hyprctl monitors -j | jq -r '.[] | select(.focused) | .name'
+}
+
+geometry=
+case $mode in
+  couleur) exec hyprpicker --autocopy --notify ;;
+  zone) geometry=$(slurp -d) || exit 0 ;;
+  fenetre) geometry=$(window_boxes | slurp -r) || exit 0 ;;
+  ecran) ;;
+  *)
+    printf 'capture : mode inconnu : %s\n' "$mode" >&2
+    exit 64
+    ;;
+esac
+
+# Laisse le menu et la sélection finir de s'effacer (animation de 300 ms), plus le délai demandé.
+sleep "$delay.4"
+
+grab() {
+  if [[ -n $geometry ]]; then
+    grim -g "$geometry" "$1"
+  else
+    grim -o "$(focused_monitor)" "$1"
+  fi
+}
+
+mkdir -p -- "$captures_dir"
+file=$captures_dir/capture-$(date +%Y%m%d-%H%M%S).png
+
+case $action in
+  copier)
+    file=${XDG_RUNTIME_DIR:-/tmp}/capture.png
+    grab "$file"
+    wl-copy --type image/png < "$file"
+    notify -i "$file" 'Capture copiée'
+    ;;
+  enregistrer)
+    grab "$file"
+    wl-copy --type image/png < "$file"
+    notify -i "$file" 'Capture enregistrée' "$file (copiée aussi)"
+    ;;
+  annoter)
+    grab - | satty --filename - --output-filename "$captures_dir/capture-%Y%m%d-%H%M%S.png" \
+      --copy-command wl-copy --early-exit
+    ;;
+  *)
+    printf 'capture : action inconnue : %s\n' "$action" >&2
+    exit 64
+    ;;
+esac

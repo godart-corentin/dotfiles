@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Ouvre une fenêtre de ~/.config/quickshell/outils, ou la ferme si elle est déjà ouverte.
-# Usage : qs-outil <inactivite|raccourcis>
+# Usage : qs-outil <inactivite|capture|raccourcis>
 
 set -euo pipefail
 
-readonly name=${1:?usage : qs-outil <inactivite|raccourcis>}
+readonly name=${1:?usage : qs-outil <inactivite|capture|raccourcis>}
 readonly file=$HOME/.config/quickshell/outils/$name.qml
 
 if [[ ! -f $file ]]; then
