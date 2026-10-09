@@ -22,7 +22,7 @@ check_dependencies() {
   local missing=()
   local command_name
 
-  for command_name in caelestia qs hyprctl wpctl wl-paste wl-copy cliphist grim slurp satty hyprpicker jq notify-send git makepkg pacman sudo flock systemctl; do
+  for command_name in caelestia qs hyprctl wpctl wl-paste wl-copy cliphist grim slurp satty hyprpicker jq notify-send zeditor kitty uwsm git makepkg pacman sudo flock systemctl; do
     command -v "$command_name" >/dev/null 2>&1 || missing+=("$command_name")
   done
 
@@ -205,6 +205,7 @@ main() {
   for file in "$script_dir"/.config/quickshell/outils/*.{qml,json}; do
     install_file "${file#"$script_dir/"}" 0644
   done
+  install_file '.config/quickshell/outils/projets.sh' 0755
   install_file '.config/hypr/hyprland.lua' 0644
   install_file '.config/hypr/config/autostart.lua' 0644
   install_file '.config/hypr/config/binds.lua' 0644

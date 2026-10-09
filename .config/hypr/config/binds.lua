@@ -90,6 +90,7 @@ hl.bind(mainMod .. " + L",          hl.dsp.global("caelestia:lock"), d("Caelesti
 hl.bind(mainMod .. " + ALT + C",    hl.dsp.global("caelestia:session"), d("Caelestia", "Session (éteindre, redémarrer…)"))
 hl.bind(mainMod .. " + I",          hl.dsp.exec_cmd(outil .. "inactivite"), d("Caelestia", "Délais d'inactivité"))
 hl.bind(mainMod .. " + F1",         hl.dsp.exec_cmd(outil .. "raccourcis"), d("Caelestia", "Aide-mémoire des raccourcis"))
+hl.bind(mainMod .. " + O",          hl.dsp.exec_cmd(outil .. "projets"), d("Applications", "Projets de ~/workspace"))
 
 ---------------------------
 ---- HARDWARE CONTROLS ----
