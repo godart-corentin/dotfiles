@@ -79,6 +79,7 @@ hl.bind(mainMod .. " + Space",      hl.dsp.global("caelestia:launcher"))
 hl.bind(mainMod .. " + semicolon",  hl.dsp.exec_cmd("pkill fuzzel || caelestia emoji -p")) -- AZERTY: same key as "."
 hl.bind(mainMod .. " + L",          hl.dsp.global("caelestia:lock"))
 hl.bind(mainMod .. " + ALT + C",    hl.dsp.global("caelestia:session"))
+hl.bind(mainMod .. " + I",          hl.dsp.exec_cmd("qs kill -c idle-picker || qs -c idle-picker -n -d")) -- délais d'inactivité
 
 ---------------------------
 ---- HARDWARE CONTROLS ----

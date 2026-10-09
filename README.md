@@ -6,6 +6,7 @@ Configuration personnelle pour CachyOS, Hyprland et Caelestia.
 
 - Caelestia : dossier des fonds d'écran (`~/Images`) et applications thémées par la CLI
 - Kitty : couleurs générées par un modèle Caelestia et rechargées à chaque changement de fond d'écran
+- Délais d'inactivité : `Super+I` ouvre une fenêtre (`qs -c idle-picker`) pour régler à la volée le verrouillage, l'extinction de l'écran et la mise en veille. Elle réécrit `general.idle.timeouts` dans `~/.config/caelestia/shell.json`
 - Hyprland : raccourcis vers Caelestia, démarrage du shell et de l'historique du presse-papiers, règle de fenêtre pour Nexus (les réglages de Caelestia)
 - `install-arch-package` : installation Arch/AUR sans helper, à lancer à la main
 

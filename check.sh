@@ -75,6 +75,12 @@ else
   fail "script absent ou non exécutable : $installer"
 fi
 
+if [[ -f "$HOME/.config/quickshell/idle-picker/shell.qml" ]]; then
+  pass "fenêtre des délais d'inactivité présente"
+else
+  fail "fenêtre absente : $HOME/.config/quickshell/idle-picker/shell.qml"
+fi
+
 binds_file="$HOME/.config/hypr/config/binds.lua"
 if [[ -f "$binds_file" ]] && grep -Eq 'hl\.bind\(mainMod \.\. " \+ Space".*caelestia:launcher' "$binds_file"; then
   pass 'bind Super+Space vers le launcher Caelestia'
