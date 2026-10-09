@@ -8,6 +8,7 @@ Configuration personnelle pour CachyOS, Hyprland et Caelestia.
 - Kitty : couleurs générées par un modèle Caelestia et rechargées à chaque changement de fond d'écran
 - Fenêtres au style de Caelestia (`~/.config/quickshell/outils`, ouvertes ou fermées par `qs-outil <nom>`) :
   - `Super+I` : délais d'inactivité (verrouillage, extinction de l'écran, mise en veille), réglés à la volée dans `general.idle.timeouts` de `~/.config/caelestia/shell.json`
+  - `Super+F1` : aide-mémoire des raccourcis, lu en direct depuis `hyprctl binds` ; chaque raccourci de `binds.lua` porte une description « Catégorie › Action »
 - Hyprland : raccourcis vers Caelestia, démarrage du shell et de l'historique du presse-papiers, règle de fenêtre pour Nexus (les réglages de Caelestia)
 - `install-arch-package` : installation Arch/AUR sans helper, à lancer à la main
 
