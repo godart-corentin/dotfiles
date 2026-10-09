@@ -13,6 +13,7 @@ Configuration personnelle pour CachyOS, Hyprland et Caelestia.
   - `Super+;` : emojis en français (recherche par nom et mots-clés, récents, couleur de peau). Données dans `emojis.json`, générées depuis emojibase-data (la commande est en tête de `emojis.qml`)
   - `Super+O` : projets de `~/workspace` avec leur état git (branche, modifications, commits à pousser) ; `Entrée` ouvre dans Zed, `Ctrl+Entrée` un terminal, `Ctrl+G` GitHub
   - `Super+Maj+O` : serveurs et ports TCP en écoute, rattachés au projet de `~/workspace` d'où ils ont été lancés ; `Entrée` ouvre `localhost:PORT`, `Ctrl+C` copie l'adresse, `Maj+Suppr` (deux fois) arrête le processus
+  - `Super+G` : GitHub via `gh` : tes PR ouvertes (CI, revue), les revues demandées et les issues assignées ; le dernier résultat est gardé dans `~/.cache/github-outil.json` pour s'afficher tout de suite
   - `Super+Tab` : vue d'ensemble des fenêtres par écran et espace de travail ; clic pour y aller, glisser une fenêtre pour la déplacer sans la suivre. Les miniatures sont en direct pour les espaces affichés, les autres montrent l'icône de l'application
   - `Super+F1` : aide-mémoire des raccourcis, lu en direct depuis `hyprctl binds` ; chaque raccourci de `binds.lua` porte une description « Catégorie › Action »
 - Hyprland : raccourcis vers Caelestia, démarrage du shell et de l'historique du presse-papiers, règle de fenêtre pour Nexus (les réglages de Caelestia)

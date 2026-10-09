@@ -22,7 +22,7 @@ check_dependencies() {
   local missing=()
   local command_name
 
-  for command_name in caelestia qs hyprctl wpctl wl-paste wl-copy cliphist grim slurp satty hyprpicker jq notify-send zeditor kitty uwsm ss git makepkg pacman sudo flock systemctl; do
+  for command_name in caelestia qs hyprctl wpctl wl-paste wl-copy cliphist grim slurp satty hyprpicker jq notify-send zeditor kitty uwsm ss gh git makepkg pacman sudo flock systemctl; do
     command -v "$command_name" >/dev/null 2>&1 || missing+=("$command_name")
   done
 

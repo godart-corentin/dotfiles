@@ -92,6 +92,7 @@ hl.bind(mainMod .. " + I",          hl.dsp.exec_cmd(outil .. "inactivite"), d("C
 hl.bind(mainMod .. " + F1",         hl.dsp.exec_cmd(outil .. "raccourcis"), d("Caelestia", "Aide-mémoire des raccourcis"))
 hl.bind(mainMod .. " + O",          hl.dsp.exec_cmd(outil .. "projets"), d("Applications", "Projets de ~/workspace"))
 hl.bind(mainMod .. " + SHIFT + O",  hl.dsp.exec_cmd(outil .. "ports"), d("Applications", "Serveurs et ports ouverts"))
+hl.bind(mainMod .. " + G",          hl.dsp.exec_cmd(outil .. "github"), d("Applications", "GitHub : PR, revues et issues"))
 hl.bind(mainMod .. " + Tab",        hl.dsp.exec_cmd(outil .. "fenetres"), d("Fenêtres", "Vue d'ensemble des fenêtres"))
 
 ---------------------------
