@@ -230,6 +230,7 @@ main() {
   done
   install_file '.config/quickshell/outils/projets.sh' 0755
   install_file '.config/quickshell/outils/ports.sh' 0755
+  install_file '.config/quickshell/outils/claude.sh' 0755
   install_file '.local/bin/claude-notif' 0755
   install_file '.config/hypr/hyprland.lua' 0644
   install_file '.config/hypr/config/autostart.lua' 0644
