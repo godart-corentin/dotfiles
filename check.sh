@@ -75,11 +75,21 @@ else
   fail "script absent ou non exécutable : $installer"
 fi
 
-if [[ -f "$HOME/.config/quickshell/idle-picker/shell.qml" ]]; then
-  pass "fenêtre des délais d'inactivité présente"
-else
-  fail "fenêtre absente : $HOME/.config/quickshell/idle-picker/shell.qml"
-fi
+for outil in inactivite; do
+  if [[ -f "$HOME/.config/quickshell/outils/$outil.qml" ]]; then
+    pass "fenêtre $outil présente"
+  else
+    fail "fenêtre absente : $HOME/.config/quickshell/outils/$outil.qml"
+  fi
+done
+
+for script in qs-outil; do
+  if [[ -x "$HOME/.local/bin/$script" ]]; then
+    pass "$script exécutable"
+  else
+    fail "script absent ou non exécutable : $HOME/.local/bin/$script"
+  fi
+done
 
 binds_file="$HOME/.config/hypr/config/binds.lua"
 if [[ -f "$binds_file" ]] && grep -Eq 'hl\.bind\(mainMod \.\. " \+ Space".*caelestia:launcher' "$binds_file"; then

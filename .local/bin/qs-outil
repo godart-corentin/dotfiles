@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Ouvre une fenêtre de ~/.config/quickshell/outils, ou la ferme si elle est déjà ouverte.
+# Usage : qs-outil <inactivite>
+
+set -euo pipefail
+
+readonly name=${1:?usage : qs-outil <inactivite>}
+readonly file=$HOME/.config/quickshell/outils/$name.qml
+
+if [[ ! -f $file ]]; then
+  printf 'qs-outil : fenêtre inconnue : %s\n' "$name" >&2
+  exit 64
+fi
+
+qs kill -p "$file" >/dev/null 2>&1 || exec qs -p "$file" -n -d

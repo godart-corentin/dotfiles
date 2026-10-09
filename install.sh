@@ -198,9 +198,12 @@ main() {
   install_file_if_absent '.config/caelestia/shell.json' 0644
   install_file '.config/caelestia/cli.json' 0644
   install_file '.config/caelestia/templates/kitty.conf' 0644
-  install_file '.config/quickshell/idle-picker/shell.qml' 0644
   install_file '.config/kitty/kitty.conf' 0644
   install_file '.local/bin/install-arch-package' 0755
+  install_file '.local/bin/qs-outil' 0755
+  for file in "$script_dir"/.config/quickshell/outils/*.qml; do
+    install_file "${file#"$script_dir/"}" 0644
+  done
   install_file '.config/hypr/hyprland.lua' 0644
   install_file '.config/hypr/config/autostart.lua' 0644
   install_file '.config/hypr/config/binds.lua' 0644
