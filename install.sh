@@ -74,6 +74,19 @@ install_file() {
   info "installé : ~/$relative"
 }
 
+# Pour les fichiers réglés ensuite depuis le shell (Nexus, fenêtre des délais d'inactivité) :
+# le dépôt ne fournit que la version initiale.
+install_file_if_absent() {
+  local relative=$1
+  local mode=$2
+
+  if [[ -e "$HOME/$relative" || -L "$HOME/$relative" ]]; then
+    info "conservé : ~/$relative"
+    return
+  fi
+  install_file "$relative" "$mode"
+}
+
 # Caelestia réécrit gtk.css à chaque changement de couleurs : on garde la version Noctalia.
 backup_noctalia_gtk() {
   local gtk_css
@@ -182,7 +195,7 @@ main() {
 
   check_dependencies
 
-  install_file '.config/caelestia/shell.json' 0644
+  install_file_if_absent '.config/caelestia/shell.json' 0644
   install_file '.config/caelestia/cli.json' 0644
   install_file '.config/caelestia/templates/kitty.conf' 0644
   install_file '.config/kitty/kitty.conf' 0644

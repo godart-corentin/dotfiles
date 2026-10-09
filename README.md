@@ -39,7 +39,7 @@ Depuis un clone existant :
 ./install.sh
 ```
 
-L'installateur est idempotent. Il vérifie les dépendances, copie uniquement les fichiers nécessaires et sauvegarde chaque cible différente sous la forme `*.bak-dotfiles-*` avant remplacement. Il recharge ensuite Hyprland, remplace Noctalia par Caelestia, désactive Elephant, démarre l'historique du presse-papiers et reprend le fond d'écran de Noctalia si Caelestia n'en a pas encore.
+L'installateur est idempotent. Il vérifie les dépendances, copie uniquement les fichiers nécessaires et sauvegarde chaque cible différente sous la forme `*.bak-dotfiles-*` avant remplacement. Seule exception : `~/.config/caelestia/shell.json` n'est copié que s'il n'existe pas encore, pour garder les réglages faits depuis Caelestia ou la fenêtre des délais d'inactivité. Il recharge ensuite Hyprland, remplace Noctalia par Caelestia, désactive Elephant, démarre l'historique du presse-papiers et reprend le fond d'écran de Noctalia si Caelestia n'en a pas encore.
 
 Il refuse d'écraser un lien symbolique divergent afin de ne pas interférer silencieusement avec un autre gestionnaire de dotfiles.
 
