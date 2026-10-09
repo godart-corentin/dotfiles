@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Hook Claude Code (Notification, Stop) : notification de bureau avec le nom du projet.
+# Rien si le terminal de la session est déjà au premier plan ; un clic sur la notification y ramène.
+# Lit l'entrée JSON du hook sur stdin.
+
+set -uo pipefail
+
+input=$(cat)
+field() { jq -r ".$1 // empty" <<<"$input"; }
+
+event=$(field hook_event_name)
+cwd=$(field cwd)
+project=$(basename "$(git -C "${cwd:-$HOME}" rev-parse --show-toplevel 2>/dev/null || echo "${cwd:-$HOME}")")
+[[ ${cwd:-$HOME} == "$HOME" ]] && project="~"
+
+# Fenêtre Hyprland du terminal : premier ancêtre de ce hook qui possède une fenêtre.
+clients=$(hyprctl clients -j 2>/dev/null) || clients='[]'
+window=
+pid=$PPID
+while [[ -n $pid && $pid -gt 1 ]]; do
+  window=$(jq -r --argjson pid "$pid" 'first(.[] | select(.pid == $pid) | .address) // empty' <<<"$clients")
+  [[ -n $window ]] && break
+  pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+done
+
+if [[ -n $window && $(hyprctl activewindow -j 2>/dev/null | jq -r '.address // empty') == "$window" ]]; then
+  exit 0
+fi
+
+case $event in
+  Notification)
+    body=$(field message)
+    case $body in
+      *permission*) body="Autorisation demandée : ${body#*permission to use }" ;;
+      *"waiting for your input"*) body="Attend ta réponse" ;;
+    esac
+    ;;
+  Stop)
+    # Début de la dernière réponse écrite, lue depuis la fin de la transcription.
+    transcript=$(field transcript_path)
+    body=
+    if [[ -r $transcript ]]; then
+      body=$(tac "$transcript" | jq -rn 'first(inputs | select(.type == "assistant") | .message.content[]? | select(.type == "text") | .text)' 2>/dev/null |
+        tr '\n' ' ' | sed 's/[*`#]//g; s/  */ /g' | cut -c1-160)
+    fi
+    body="Terminé${body:+ : $body}"
+    ;;
+  *) exit 0 ;;
+esac
+
+# En arrière-plan : le hook rend la main tout de suite, la notification attend le clic.
+(
+  action=$(notify-send -a "Claude Code" -i utilities-terminal --action=default=Afficher --wait "Claude · $project" "$body")
+  if [[ $action == default && -n $window ]]; then
+    hyprctl dispatch "hl.dsp.focus({ window = \"address:$window\" })" >/dev/null
+  fi
+) </dev/null >/dev/null 2>&1 &
+disown
+exit 0

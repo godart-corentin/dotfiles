@@ -83,13 +83,20 @@ for outil in inactivite capture raccourcis presse-papiers emojis projets fenetre
   fi
 done
 
-for script in qs-outil capture; do
+for script in qs-outil capture claude-notif; do
   if [[ -x "$HOME/.local/bin/$script" ]]; then
     pass "$script exécutable"
   else
     fail "script absent ou non exécutable : $HOME/.local/bin/$script"
   fi
 done
+
+if jq -e '[.hooks.Notification[]?.hooks[]?.command, .hooks.Stop[]?.hooks[]?.command] | map(select(. == "~/.local/bin/claude-notif")) | length == 2' \
+  "$HOME/.claude/settings.json" >/dev/null 2>&1; then
+  pass 'hooks Claude Code de notification configurés'
+else
+  fail "hooks Notification et Stop vers claude-notif absents de $HOME/.claude/settings.json"
+fi
 
 binds_file="$HOME/.config/hypr/config/binds.lua"
 if [[ -f "$binds_file" ]] && grep -Eq 'hl\.bind\(mainMod \.\. " \+ Space".*caelestia:launcher' "$binds_file"; then

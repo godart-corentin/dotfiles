@@ -16,6 +16,7 @@ Configuration personnelle pour CachyOS, Hyprland et Caelestia.
   - `Super+G` : GitHub via `gh` : tes PR ouvertes (CI, revue), les revues demandées et les issues assignées ; le dernier résultat est gardé dans `~/.cache/github-outil.json` pour s'afficher tout de suite
   - `Super+Tab` : vue d'ensemble des fenêtres par écran et espace de travail ; clic pour y aller, glisser une fenêtre pour la déplacer sans la suivre. Les miniatures sont en direct pour les espaces affichés, les autres montrent l'icône de l'application
   - `Super+F1` : aide-mémoire des raccourcis, lu en direct depuis `hyprctl binds` ; chaque raccourci de `binds.lua` porte une description « Catégorie › Action »
+- Claude Code : `claude-notif`, appelé par les hooks `Notification` et `Stop` que l'installateur ajoute à `~/.claude/settings.json`, envoie une notification avec le projet quand une session attend ta réponse ou a fini (sauf si son terminal est déjà au premier plan) ; un clic ramène à ce terminal
 - Hyprland : raccourcis vers Caelestia, démarrage du shell et de l'historique du presse-papiers, règle de fenêtre pour Nexus (les réglages de Caelestia)
 - `install-arch-package` : installation Arch/AUR sans helper, à lancer à la main
 

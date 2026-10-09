@@ -87,6 +87,29 @@ install_file_if_absent() {
   install_file "$relative" "$mode"
 }
 
+# Hooks Claude Code : notification de bureau quand une session attend ta réponse ou a fini.
+# Ajoutés à ~/.claude/settings.json s'ils manquent, sans toucher aux autres réglages.
+configure_claude_hooks() {
+  local settings="$HOME/.claude/settings.json"
+  local command='~/.local/bin/claude-notif'
+  local event missing=()
+
+  [[ -f $settings ]] || return 0
+  for event in Notification Stop; do
+    jq -e --arg event "$event" --arg command "$command" \
+      '[.hooks[$event][]?.hooks[]?.command] | index($command)' "$settings" >/dev/null || missing+=("$event")
+  done
+  (( ${#missing[@]} > 0 )) || return 0
+
+  backup_file "$settings"
+  local updated
+  updated=$(jq --arg command "$command" \
+    'reduce $ARGS.positional[] as $event (.; .hooks[$event] = ((.hooks[$event] // []) + [{hooks: [{type: "command", command: $command, timeout: 10}]}]))' \
+    "$settings" --args "${missing[@]}") || die "impossible de mettre à jour $settings"
+  printf '%s\n' "$updated" >"$settings"
+  info "hooks Claude Code ajoutés : ${missing[*]}"
+}
+
 # Caelestia réécrit gtk.css à chaque changement de couleurs : on garde la version Noctalia.
 backup_noctalia_gtk() {
   local gtk_css
@@ -207,12 +230,14 @@ main() {
   done
   install_file '.config/quickshell/outils/projets.sh' 0755
   install_file '.config/quickshell/outils/ports.sh' 0755
+  install_file '.local/bin/claude-notif' 0755
   install_file '.config/hypr/hyprland.lua' 0644
   install_file '.config/hypr/config/autostart.lua' 0644
   install_file '.config/hypr/config/binds.lua' 0644
   install_file '.config/hypr/config/windowrules.lua' 0644
 
   backup_noctalia_gtk
+  configure_claude_hooks
   apply_runtime_configuration || runtime_failed=$?
 
   if (( runtime_failed != 0 )); then
