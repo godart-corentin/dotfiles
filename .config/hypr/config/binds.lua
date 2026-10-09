@@ -91,6 +91,7 @@ hl.bind(mainMod .. " + ALT + C",    hl.dsp.global("caelestia:session"), d("Caele
 hl.bind(mainMod .. " + I",          hl.dsp.exec_cmd(outil .. "inactivite"), d("Caelestia", "Délais d'inactivité"))
 hl.bind(mainMod .. " + F1",         hl.dsp.exec_cmd(outil .. "raccourcis"), d("Caelestia", "Aide-mémoire des raccourcis"))
 hl.bind(mainMod .. " + O",          hl.dsp.exec_cmd(outil .. "projets"), d("Applications", "Projets de ~/workspace"))
+hl.bind(mainMod .. " + SHIFT + O",  hl.dsp.exec_cmd(outil .. "ports"), d("Applications", "Serveurs et ports ouverts"))
 hl.bind(mainMod .. " + Tab",        hl.dsp.exec_cmd(outil .. "fenetres"), d("Fenêtres", "Vue d'ensemble des fenêtres"))
 
 ---------------------------
