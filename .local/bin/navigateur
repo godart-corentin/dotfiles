@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Ouvre Firefox hors de l'arbre de processus de l'appelant, pour tous les liens (xdg-open, $BROWSER).
+# Lancé directement depuis kitty ou une app ouverte depuis kitty, un Firefox pas encore démarré
+# descendrait du terminal : Hyprland l'avalerait (enable_swallow) à la place de la fenêtre kitty.
+# En service systemd, son parent est le gestionnaire systemd de l'utilisateur.
+# Usage : navigateur [options Firefox] [URL…]
+
+set -euo pipefail
+
+exec uwsm app -t service -- /usr/lib/firefox/firefox "$@"

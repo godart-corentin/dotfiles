@@ -110,6 +110,31 @@ configure_claude_hooks() {
   info "hooks Claude Code ajoutés : ${missing[*]}"
 }
 
+# Firefox reste le navigateur par défaut (il se redéclare lui-même sous firefox.desktop),
+# mais son entrée utilisateur passe par navigateur, qui le lance hors du terminal.
+# Régénérée depuis l'entrée du paquet à chaque installation pour suivre ses mises à jour.
+install_firefox_entry() {
+  local source=/usr/share/applications/firefox.desktop
+  local target="$HOME/.local/share/applications/firefox.desktop"
+  local generated
+
+  [[ -f "$source" ]] || die "entrée Firefox absente : $source"
+  generated=$(sed "s#^Exec=/usr/lib/firefox/firefox#Exec=$HOME/.local/bin/navigateur#" "$source")
+  if grep '^Exec=' <<<"$generated" | grep -vqF "Exec=$HOME/.local/bin/navigateur "; then
+    die "commande Firefox inattendue dans $source"
+  fi
+
+  if [[ -f "$target" ]] && cmp -s -- "$target" <(printf '%s\n' "$generated"); then
+    info "inchangé : ~/.local/share/applications/firefox.desktop"
+    return
+  fi
+  [[ -f "$target" ]] && backup_file "$target"
+  mkdir -p -- "$(dirname -- "$target")"
+  printf '%s\n' "$generated" >"$target"
+  update-desktop-database "$(dirname -- "$target")" 2>/dev/null || true
+  info "installé : ~/.local/share/applications/firefox.desktop"
+}
+
 # Caelestia réécrit gtk.css à chaque changement de couleurs : on garde la version Noctalia.
 backup_noctalia_gtk() {
   local gtk_css
@@ -232,9 +257,12 @@ main() {
   install_file '.config/quickshell/outils/ports.sh' 0755
   install_file '.config/quickshell/outils/claude.sh' 0755
   install_file '.local/bin/claude-notif' 0755
+  install_file '.local/bin/navigateur' 0755
+  install_firefox_entry
   install_file '.config/hypr/hyprland.lua' 0644
   install_file '.config/hypr/config/autostart.lua' 0644
   install_file '.config/hypr/config/binds.lua' 0644
+  install_file '.config/hypr/config/misc.lua' 0644
   install_file '.config/hypr/config/windowrules.lua' 0644
 
   backup_noctalia_gtk

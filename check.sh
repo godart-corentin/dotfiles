@@ -83,7 +83,7 @@ for outil in inactivite capture raccourcis presse-papiers emojis projets fenetre
   fi
 done
 
-for script in qs-outil capture claude-notif; do
+for script in qs-outil capture claude-notif navigateur; do
   if [[ -x "$HOME/.local/bin/$script" ]]; then
     pass "$script exécutable"
   else
@@ -96,6 +96,20 @@ if jq -e '[.hooks.Notification[]?.hooks[]?.command, .hooks.Stop[]?.hooks[]?.comm
   pass 'hooks Claude Code de notification configurés'
 else
   fail "hooks Notification et Stop vers claude-notif absents de $HOME/.claude/settings.json"
+fi
+
+if [[ "$(hyprctl getoption misc:enable_swallow -j 2>/dev/null | jq -r '.bool')" == false ]]; then
+  pass 'fenêtres non avalées par les terminaux'
+else
+  fail 'misc:enable_swallow actif dans Hyprland'
+fi
+
+firefox_entry="$HOME/.local/share/applications/firefox.desktop"
+if [[ "$(xdg-mime query default x-scheme-handler/https 2>/dev/null)" == firefox.desktop ]] &&
+  grep -Fqx "Exec=$HOME/.local/bin/navigateur %u" "$firefox_entry" 2>/dev/null; then
+  pass 'liens ouverts dans Firefox via navigateur'
+else
+  fail "liens https non confiés à Firefox via navigateur : $firefox_entry"
 fi
 
 binds_file="$HOME/.config/hypr/config/binds.lua"
